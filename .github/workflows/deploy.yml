@@ -14,7 +14,7 @@ jobs:
 
     - name: Log in to Docker Hub
       run: |
-        echo "manumass" | docker login -u "ManuRoy" --password-stdin
+        echo "manumass1234" | docker login -u "ManuRoy" --password-stdin
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
