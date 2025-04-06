@@ -1,0 +1,37 @@
+name: CI/CD Deploy to Minikube
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      run: |
+        echo "manumass" | docker login -u "ManuRoy" --password-stdin
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.27.0'
+
+    - name: Set kubeconfig
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBE_CONFIG_RAW }}" > ~/.kube/config
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f app-deployment.yaml
+        kubectl apply -f app-service.yaml
+
+    - name: Verify Deployment
+      run: |
+        kubectl rollout status deployment/hello-k8s-app
+        kubectl get svc
